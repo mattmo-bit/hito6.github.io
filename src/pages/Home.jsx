@@ -23,15 +23,17 @@ const Home = () => {
     <main className="home-main">
       <Header />
       <div className="cards-container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px', padding: '20px' }}>
-        {pizzas.map((pizza) => (
-          <CardPizza
-            key={pizza.id}
-            name={pizza.name}
-            price={pizza.price}
-            ingredients={pizza.ingredients}
-            img={pizza.img}
-          />
-        ))}
+
+      {pizzas.map((pizza) => (
+  <CardPizza
+    key={pizza.id}         // 👈 Clave única obligatoria en React
+    id={pizza.id}          // 👈 Asegúrate de pasar el id explícitamente
+    name={pizza.name}
+    price={pizza.price}
+    ingredients={pizza.ingredients}
+    img={pizza.img}
+  />
+      ))}
       </div>
     </main>
   );

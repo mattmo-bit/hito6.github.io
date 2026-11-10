@@ -1,52 +1,36 @@
-import React, { useState } from 'react';
-import { pizzaCart } from '../data/pizzas'; // 👈 Asegúrate de usar llaves { pizzaCart }
+import React, { useContext } from 'react';
+import { CartContext } from '../context/CartContext';
 
 const Cart = () => {
-  const [cart, setCart] = useState(pizzaCart);
-
-  const increaseCount = (index) => {
-    const updatedCart = [...cart];
-    updatedCart[index].count += 1;
-    setCart(updatedCart);
-  };
-
-  
-  const decreaseCount = (index) => {
-    const updatedCart = [...cart];
-    if (updatedCart[index].count > 1) {
-      updatedCart[index].count -= 1;
-      setCart(updatedCart);
-    } else {
-      updatedCart.splice(index, 1);
-      setCart(updatedCart);
-    }
-  };
-
-  const total = cart.reduce((acc, item) => acc + item.price * item.count, 0);
+  const { cart, incrementQuantity, decrementQuantity, total } = useContext(CartContext);
 
   return (
-    <div className="cart-container">
+    <div style={{ padding: '30px 20px', maxWidth: '800px', margin: '0 auto' }}>
       <h2>Detalles del pedido:</h2>
-      <div className="cart-list">
-        {cart.map((item, index) => (
-          <div key={item.id} className="cart-item">
-            <div className="cart-item-info">
-              <img src={item.img} alt={item.name} className="cart-item-img" />
-              <span className="cart-item-name">{item.name}</span>
+      {cart.length === 0 ? (
+        <p style={{ marginTop: '20px', color: '#666' }}>Tu carrito está vacío 🛒</p>
+      ) : (
+        <div>
+          {cart.map((item) => (
+            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', padding: '15px 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <img src={item.img} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px' }} />
+                <span style={{ fontWeight: 'bold', textTransform: 'capitalize' }}>{item.name}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span style={{ color: '#28a745', fontWeight: 'bold' }}>${(item.price * item.count).toLocaleString('es-CL')}</span>
+                <button onClick={() => decrementQuantity(item.id)} style={{ background: '#dc3545', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>-</button>
+                <span>{item.count}</span>
+                <button onClick={() => incrementQuantity(item.id)} style={{ background: '#007bff', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>+</button>
+              </div>
             </div>
-            <div className="cart-item-actions">
-              <span className="cart-item-price">${item.price.toLocaleString('es-CL')}</span>
-              <button className="btn-qty btn-minus" onClick={() => decreaseCount(index)}>-</button>
-              <span className="cart-item-count">{item.count}</span>
-              <button className="btn-qty btn-plus" onClick={() => increaseCount(index)}>+</button>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="cart-total">
-        <h3>Total: ${total.toLocaleString('es-CL')}</h3>
-      </div>
-      <button className="btn-pay">Pagar</button>
+          ))}
+          <h3 style={{ marginTop: '30px' }}>Total: ${total.toLocaleString('es-CL')}</h3>
+          <button style={{ background: '#28a745', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '4px', fontSize: '1rem', cursor: 'pointer', marginTop: '15px' }}>
+            Ir a Pagar 💳
+          </button>
+        </div>
+      )}
     </div>
   );
 };
